@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Profile
 from .serializers import ProfileSerializer
+from drf_api.permissions import IsOwnerOrReadOnly
 
 
 class ProfileList(APIView):
@@ -15,7 +16,9 @@ class ProfileList(APIView):
     def get(self, request):
         profiles = Profile.objects.all()
         # specify many=True to ensure several profiles will be serialized
-        serializer = ProfileSerializer(profiles, many=True)
+        serializer = ProfileSerializer(
+            profiles, many=True, context={'request': request}
+            )
         # return data from our serializer
         return Response(serializer.data)
 
@@ -23,6 +26,8 @@ class ProfileList(APIView):
 class ProfileDetail(APIView):
     # render a form to update profile, using REST framework
     serializer_class = ProfileSerializer
+    # add custom permission classes
+    permission_classes = [IsOwnerOrReadOnly]
 
     # retrieve profile by primary key if it exists
     def get_object(self, pk):
@@ -34,12 +39,18 @@ class ProfileDetail(APIView):
 
     def get(self, request, pk):
         profile = self.get_object(pk)
-        serializer = ProfileSerializer(profile)
+        serializer = ProfileSerializer(
+            profile, context={'request': request}
+            )
         return Response(serializer.data)
 
     def put(self, request, pk):
         profile = self.get_object(pk)
-        serializer = ProfileSerializer(profile, data=request.data)
+        # check object permissions before returning the profile
+        self.check_object_permissions(self.request, profile)
+        serializer = ProfileSerializer(
+            profile, data=request.data, context={'request': request}
+            )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

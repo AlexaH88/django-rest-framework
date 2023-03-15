@@ -1,6 +1,5 @@
 from django.http import Http404
 from rest_framework import status
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Profile
@@ -11,7 +10,7 @@ from drf_api.permissions import IsOwnerOrReadOnly
 class ProfileList(APIView):
     """
     List all profiles
-    No Create view (post method), as profile creation handled by sjango signals
+    No Create view (post method), as profile creation handled by django signals
     """
     def get(self, request):
         profiles = Profile.objects.all()

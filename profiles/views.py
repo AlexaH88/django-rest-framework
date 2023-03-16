@@ -23,7 +23,8 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
 # class ProfileList(APIView):
 #     """
 #     List all profiles
-#     No Create view (post method), as profile creation handled by django signals
+#     No Create view (post method), as profile creation handled by
+#     django signals
 #     """
 #     def get(self, request):
 #         profiles = Profile.objects.all()
@@ -66,4 +67,6 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
 #         if serializer.is_valid():
 #             serializer.save()
 #             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(
+#               serializer.errors, status=status.HTTP_400_BAD_REQUEST
+#               )

@@ -36,7 +36,10 @@ class ProfileList(generics.ListAPIView):
     ]
     # for DjangoFilterBackend
     filterset_fields = [
-        'owner__following__followed__profile'
+        # filter which profiles the user is following
+        'owner__following__followed__profile',
+        # filter which profiles are following the user
+        'owner__followed__owner__profile'
     ]
 
 
